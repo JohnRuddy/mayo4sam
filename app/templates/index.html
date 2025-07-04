@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card" style="background: linear-gradient(135deg, #dc3545 0%, #198754 100%); color: white;">
+                <div class="card-body">
+                    <h1 class="card-title" style="color: white;">Welcome to Mayo4Sam</h1>
+                    <p class="card-text" style="color: white;">Your dedicated source for Mayo GAA football news, automatically collecting and filtering stories from over 16 Irish sports websites. Never miss another Mayo football update - all the latest team news, match reports, player interviews, and championship coverage in one convenient location, updated every 30 minutes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Search & Filter</h5>
+                    <form method="get">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="start_date" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" name="start_date" id="start_date" value="{{ start_date }}" min="{{ min_date }}" max="{{ max_date }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="end_date" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" name="end_date" id="end_date" value="{{ end_date }}" min="{{ min_date }}" max="{{ max_date }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="keyword" class="form-label">Search</label>
+                                    <input type="text" class="form-control" name="keyword" id="keyword" value="{{ keyword }}" placeholder="Search title or content">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Clear</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Latest News {% if stories %}({{ stories|length }} stories){% endif %}</h2>
+
+    {% if stories %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for story in stories %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body d-flex flex-column">
+                        {% set img_width = 400 %}
+                        {% set img_height = 160 %}
+                        {% if story.image_url %}
+                            <img src="{{ story.image_url }}" class="img-fluid rounded mb-2" style="max-height: {{ img_height }}px; object-fit: cover; width: 100%;" alt="thumbnail">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/placeholder.png') }}" class="img-fluid rounded mb-2" style="max-height: {{ img_height }}px; object-fit: cover; width: 100%;" alt="placeholder">
+                        {% endif %}
+                        <h5 class="card-title">
+                            <a href="{{ story.link }}#referrer=www.mayo4sam.com" target="_blank" rel="noopener noreferrer">{{ story.title }}</a>
+                        </h5>
+                        <small class="text-muted">
+                            {{ story.published|friendly_time }}
+                        </small>
+                        <p class="card-text mt-2 flex-grow-1">{{ story.description|striptags }}</p>
+                        <h6 class="mt-2">
+                            <a href="{{ story.link }}#referrer=www.mayo4sam.com" target="_blank" rel="noopener noreferrer">
+                                {{ story.link|get_domain }}
+                            </a>
+                        </h6>
+                        
+                        <!-- Social Sharing Buttons -->
+                        <div class="mt-3 border-top pt-3">
+                            <small class="text-muted d-block mb-2">Share this story:</small>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <!-- Facebook -->
+                                <a href="https://www.facebook.com/sharer/sharer.php?u={{ story.link|urlencode }}%23referrer%3Dwww.mayo4sam.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary" title="Share on Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <!-- LinkedIn -->
+                                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ story.link|urlencode }}%23referrer%3Dwww.mayo4sam.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary" title="Share on LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <!-- WhatsApp -->
+                                <a href="https://wa.me/?text={{ story.title|urlencode }}%20{{ story.link|urlencode }}%23referrer%3Dwww.mayo4sam.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-success" title="Share on WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <!-- X (formerly Twitter) -->
+                                <a href="https://twitter.com/intent/tweet?text={{ story.title|urlencode }}&url={{ story.link|urlencode }}%23referrer%3Dwww.mayo4sam.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-dark" title="Share on X">
+                                    <i class="fab fa-x-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center">
+            <h3 class="card-title">No Stories Found</h3>
+            <p class="card-text">
+                {% if start_date or end_date or keyword %}
+                No stories match your current filters. Try adjusting your search criteria.
+                {% else %}
+                No Mayo football stories are currently available. Stories are updated every 30 minutes.
+                {% endif %}
+            </p>
+            <a href="{{ url_for('main.home') }}" class="btn btn-primary">Clear Filters</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}About - Mayo4Sam{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>About Mayo4Sam</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Personal Project</h3>
+                    <p class="card-text">
+                        Mayo4Sam is a personal project created to solve a simple problem: staying up-to-date with Mayo football news scattered across different Irish sports websites. Instead of visiting multiple sites daily, this application brings all the Mayo-related stories together in one place.
+                    </p>
+                    <p class="card-text">
+                        As a Mayo football supporter, I found myself constantly checking various sports news websites to catch the latest updates. This became time-consuming and I often missed stories. Mayo4Sam automates this process, saving time and ensuring no important Mayo news gets overlooked.
+                    </p>
+                    <p class="card-text">
+                        <strong>Enjoyed this project?</strong> If you find Mayo4Sam useful and would like to see more projects like this, feel free to connect with me on social media:
+                    </p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="https://www.linkedin.com/in/johnpruddy/" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary">
+                            <i class="fab fa-linkedin-in me-2"></i>Follow on LinkedIn
+                        </a>
+                        <a href="https://github.com/JohnRuddy" target="_blank" rel="noopener noreferrer" class="btn btn-outline-dark">
+                            <i class="fab fa-github me-2"></i>View on GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Stats</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Sources:</strong> {{ feeds|length }} RSS feeds</li>
+                        <li><strong>Filter:</strong> Mayo-related content</li>
+                        <li><strong>Updates:</strong> Every 30 minutes</li>
+                        <li><strong>Platform:</strong> Web-based</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h3 class="card-title">How It Works (In Simple Terms)</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>1. Data Collection</h5>
+                    <p>The application automatically visits Irish sports news websites every 30 minutes and reads their RSS feeds (a standardized way websites share their latest articles).</p>
+                    
+                    <h5>2. Filtering</h5>
+                    <p>From all the GAA stories collected, it keeps only those that mention "Mayo" in the title or content, filtering out stories about other counties.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>3. Organization</h5>
+                    <p>The Mayo stories are organized by date with the newest first, and duplicate stories from different sources are handled intelligently.</p>
+                    
+                    <h5>4. Presentation</h5>
+                    <p>Everything is displayed in a clean, mobile-friendly format with search and date filtering options to help you find exactly what you're looking for.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Monitored RSS Feeds</h2>
+    <p class="text-muted">These are the Irish sports news sources currently being monitored for Mayo football content:</p>
+    
+    <div class="row">
+        {% for feed in feeds %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ feed.title }}</h5>
+                    <p class="card-text">
+                        <strong>Stories Available:</strong> {{ feed.entries_count }}<br>
+                        <strong>Last Updated:</strong> {{ feed.last_updated }}<br>
+                        <strong>Source:</strong> <a href="{{ feed.link }}" target="_blank" class="text-break">{{ feed.url | get_domain }}</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Technical Details</h5>
+            <p class="card-text">
+                <strong>Built with:</strong> Python Flask web framework<br>
+                <strong>Frontend:</strong> Bootstrap for responsive design<br>
+                <strong>Data Processing:</strong> RSS feed parsing and content filtering<br>
+                <strong>Caching:</strong> Smart caching system to improve performance<br>
+                <strong>Hosting:</strong> Can be run locally or deployed to any web server
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
